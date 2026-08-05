@@ -88,7 +88,7 @@
                             </div>
                             <div>
                                 <label for="description" class="mb-1.5 block text-xs font-semibold text-slate-700">Why it is Banned?</label>
-                                <textarea id="description" name="description" rows="15" maxlength="5000" required class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-[#38836d] focus:ring-4 focus:ring-emerald-100" placeholder="Describe the reason...">{{ old('description') }}</textarea>
+                                <textarea id="description" name="description" rows="10" maxlength="5000" required class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-[#38836d] focus:ring-4 focus:ring-emerald-100" placeholder="Describe the reason...">{{ old('description') }}</textarea>
                                 @error('description')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                             </div>
                             <button type="submit" class="auth-submit">Save record <span aria-hidden="true">&rarr;</span></button>
