@@ -58,8 +58,8 @@
                     <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                     Add banned renter
                 </summary>
-                <div data-modal-backdrop class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-[2px] sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:z-30 sm:mt-3 sm:block sm:w-[440px] sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
-                    <div role="dialog" aria-modal="true" aria-labelledby="new-record-title" class="max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl sm:max-h-none sm:max-w-none sm:shadow-xl">
+                <div data-modal-backdrop class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-[2px]">
+                    <div role="dialog" aria-modal="true" aria-labelledby="new-record-title" class="max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl">
                         <div class="mb-5 flex items-start justify-between gap-4">
                             <div>
                                 <h2 id="new-record-title" class="font-semibold text-[#102922]">Create new banned renter record</h2>

@@ -74,14 +74,24 @@ window.addEventListener('pageshow', () => {
 });
 
 const closeRecordModal = (modal) => {
-    modal?.removeAttribute('open');
+    if (! modal) return;
+
+    modal.open = false;
+    modal.removeAttribute('open');
     document.body.classList.remove('overflow-hidden');
+    modal.querySelector(':scope > summary')?.focus();
 };
 
 document.addEventListener('click', (event) => {
-    const modal = event.target.closest('[data-record-modal]');
+    const closeButton = event.target.closest('[data-modal-close]');
 
-    if (event.target.closest('[data-modal-close]')) closeRecordModal(modal);
+    if (closeButton) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        closeRecordModal(closeButton.closest('[data-record-modal]'));
+
+        return;
+    }
 
     const summary = event.target.closest('[data-record-modal] > summary');
     if (summary?.parentElement.open) event.preventDefault();
