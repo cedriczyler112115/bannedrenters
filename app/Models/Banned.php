@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['fullname', 'address', 'license', 'description', 'created_by', 'date_created'])]
+#[Fillable(['fullname', 'address', 'source', 'license', 'description', 'created_by', 'date_created'])]
 class Banned extends Model
 {
     protected $table = 'banned';

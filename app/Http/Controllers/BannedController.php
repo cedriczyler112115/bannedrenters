@@ -6,8 +6,8 @@ use App\Models\Banned;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Throwable;
 
@@ -42,6 +42,7 @@ class BannedController extends Controller
         $validated = $request->validate([
             'fullname' => ['required', 'string', 'max:150'],
             'address' => ['required', 'string', 'max:255'],
+            'source' => ['required', 'string', 'max:100'],
             'license' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'description' => ['required', 'string', 'max:5000'],
         ]);
@@ -54,6 +55,7 @@ class BannedController extends Controller
             Banned::query()->create([
                 'fullname' => trim($validated['fullname']),
                 'address' => trim($validated['address']),
+                'source' => trim($validated['source']),
                 'license' => $licensePath,
                 'description' => trim($validated['description']),
                 'created_by' => $request->user()->id,

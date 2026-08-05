@@ -82,6 +82,11 @@
                                 @error('address')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                             </div>
                             <div>
+                                <label for="source" class="mb-1.5 block text-xs font-semibold text-slate-700">Source</label>
+                                <input id="source" name="source" value="{{ old('source') }}" maxlength="100" required class="auth-input" placeholder="Where this information came from">
+                                @error('source')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                            </div>
+                            <div>
                                 <label for="license" class="mb-1.5 block text-xs font-semibold text-slate-700">License image <span class="font-normal text-slate-400">(optional)</span></label>
                                 <input id="license" name="license" type="file" accept="image/jpeg,image/png,image/webp" class="block w-full rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-500 file:mr-3 file:border-0 file:bg-[#e9f6ef] file:px-4 file:py-3 file:font-semibold file:text-[#176047] hover:file:bg-[#dcefe5]">
                                 @error('license')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
@@ -163,7 +168,10 @@
 
                             <div class="p-5">
                                 <div class="flex items-start justify-between gap-4">
-                                    <p class="shrink-0 text-[10px] font-bold uppercase tracking-[.1em] text-[#38836d]">Record #{{ str_pad($record->id, 5, '0', STR_PAD_LEFT) }}</p>
+                                    <div class="min-w-0 shrink-0">
+                                        <p class="text-[10px] font-bold uppercase tracking-[.1em] text-[#38836d]">Record #{{ str_pad($record->id, 5, '0', STR_PAD_LEFT) }}</p>
+                                        <p class="mt-1 max-w-32 truncate text-[9px] text-slate-500" title="{{ $record->source ?: 'Not provided' }}"><span class="font-bold uppercase tracking-[.08em] text-slate-400">Source:</span> {{ $record->source ?: 'Not provided' }}</p>
+                                    </div>
                                     <div class="flex min-w-0 items-start divide-x divide-slate-200 text-right">
                                         <div class="min-w-0 px-2.5 first:pl-0">
                                             <p class="text-[7px] font-bold uppercase tracking-[.1em] text-slate-400">Created by</p>

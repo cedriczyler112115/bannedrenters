@@ -183,6 +183,7 @@ class ExampleTest extends TestCase
         $response = $this->actingAs($user)->post('/banned', [
             'fullname' => 'Juan Dela Cruz',
             'address' => '123 Rizal Street, Davao City',
+            'source' => 'Verified landlord report',
             'license' => UploadedFile::fake()->image('license.png'),
             'description' => 'Documented unpaid rent and property damage.',
         ]);
@@ -196,6 +197,7 @@ class ExampleTest extends TestCase
         $this->assertSame($user->id, $record->created_by);
         $this->assertSame('Juan Dela Cruz', $record->fullname);
         $this->assertSame('123 Rizal Street, Davao City', $record->address);
+        $this->assertSame('Verified landlord report', $record->source);
         Storage::disk('public')->assertExists($record->license);
     }
 
@@ -206,6 +208,7 @@ class ExampleTest extends TestCase
         $response = $this->actingAs($user)->post('/banned', [
             'fullname' => 'Maria Santos',
             'address' => 'General Santos City',
+            'source' => 'Property owner submission',
             'description' => 'Repeatedly violated the rental agreement.',
         ]);
 
@@ -289,6 +292,7 @@ class ExampleTest extends TestCase
         Banned::query()->create([
             'fullname' => 'Matching Renter',
             'address' => 'Davao City',
+            'source' => 'Barangay incident report',
             'license' => 'licenses/matching.png',
             'description' => 'Searchable incident',
             'created_by' => $user->id,
@@ -310,6 +314,7 @@ class ExampleTest extends TestCase
             ->get('/dashboard?fullname=Matching')
             ->assertOk()
             ->assertSee('Matching Renter')
+            ->assertSee('Barangay incident report')
             ->assertSee('0917 555 0199')
             ->assertDontSee('Other Renter 1');
 
