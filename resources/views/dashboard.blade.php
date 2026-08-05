@@ -170,7 +170,7 @@
                                 <div class="flex items-start justify-between gap-4">
                                     <div class="min-w-0 shrink-0">
                                         <p class="text-[10px] font-bold uppercase tracking-[.1em] text-[#38836d]">Record #{{ str_pad($record->id, 5, '0', STR_PAD_LEFT) }}</p>
-                                        <p class="mt-1 max-w-32 truncate text-[9px] text-slate-500" title="{{ $record->source ?: 'Not provided' }}"><span class="font-bold uppercase tracking-[.08em] text-slate-400">Source:</span> {{ $record->source ?: 'Not provided' }}</p>
+                                        <p class="mt-1 max-w-32 truncate text-[9px] text-slate-500" title="{{ $record->source ?: 'Not provided' }}"><span class="font-bold uppercase tracking-[.08em] text-slate-400">Source:</span> <b>{{ $record->source ?: 'Not provided' }}</b></p>
                                     </div>
                                     <div class="flex min-w-0 items-start divide-x divide-slate-200 text-right">
                                         <div class="min-w-0 px-2.5 first:pl-0">
