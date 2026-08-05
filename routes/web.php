@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ApprovalController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BannedController;
 use App\Http\Controllers\ContactNumberController;
 use App\Http\Controllers\GoogleAuthController;
@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('approved')->group(function () {
             Route::get('/dashboard', [BannedController::class, 'index'])->name('dashboard');
             Route::post('/banned', [BannedController::class, 'store'])->name('banned.store');
+            Route::patch('/banned/{banned}', [BannedController::class, 'update'])->name('banned.update');
             Route::delete('/banned/{banned}', [BannedController::class, 'destroy'])->name('banned.destroy');
 
             Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {

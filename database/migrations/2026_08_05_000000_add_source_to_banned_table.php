@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('banned', function (Blueprint $table) {
-            $table->string('source', 100)->nullable()->after('address');
+            $table->string('source', 100)->default('NEW')->after('address');
         });
     }
 

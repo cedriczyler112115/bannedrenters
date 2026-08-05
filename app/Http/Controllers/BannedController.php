@@ -42,7 +42,6 @@ class BannedController extends Controller
         $validated = $request->validate([
             'fullname' => ['required', 'string', 'max:150'],
             'address' => ['required', 'string', 'max:255'],
-            'source' => ['required', 'string', 'max:100'],
             'license' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'description' => ['required', 'string', 'max:5000'],
         ]);
@@ -55,7 +54,7 @@ class BannedController extends Controller
             Banned::query()->create([
                 'fullname' => trim($validated['fullname']),
                 'address' => trim($validated['address']),
-                'source' => trim($validated['source']),
+                'source' => 'NEW',
                 'license' => $licensePath,
                 'description' => trim($validated['description']),
                 'created_by' => $request->user()->id,
@@ -85,5 +84,43 @@ class BannedController extends Controller
         }
 
         return back()->with('status', 'Banned renter record deleted successfully.');
+    }
+
+    public function update(Request $request, Banned $banned): RedirectResponse
+    {
+        Gate::authorize('update', $banned);
+
+        $validated = $request->validate([
+            'fullname' => ['required', 'string', 'max:150'],
+            'address' => ['required', 'string', 'max:255'],
+            'license' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'description' => ['required', 'string', 'max:5000'],
+        ]);
+
+        $oldLicensePath = $banned->license;
+        $newLicensePath = $request->hasFile('license')
+            ? $request->file('license')->store('licenses', 'public')
+            : null;
+
+        try {
+            $banned->update([
+                'fullname' => trim($validated['fullname']),
+                'address' => trim($validated['address']),
+                'license' => $newLicensePath ?: $oldLicensePath,
+                'description' => trim($validated['description']),
+            ]);
+        } catch (Throwable $exception) {
+            if ($newLicensePath) {
+                Storage::disk('public')->delete($newLicensePath);
+            }
+
+            throw $exception;
+        }
+
+        if ($newLicensePath && $oldLicensePath) {
+            Storage::disk('public')->delete($oldLicensePath);
+        }
+
+        return back()->with('status', 'Banned renter record updated successfully.');
     }
 }

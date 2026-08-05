@@ -73,27 +73,27 @@ window.addEventListener('pageshow', () => {
     document.querySelector('[data-registry-skeleton]')?.classList.add('hidden');
 });
 
-const closeBannedModal = (modal) => {
+const closeRecordModal = (modal) => {
     modal?.removeAttribute('open');
     document.body.classList.remove('overflow-hidden');
 };
 
 document.addEventListener('click', (event) => {
-    const modal = event.target.closest('[data-banned-modal]');
+    const modal = event.target.closest('[data-record-modal]');
 
-    if (event.target.closest('[data-modal-close]')) closeBannedModal(modal);
+    if (event.target.closest('[data-modal-close]')) closeRecordModal(modal);
 
-    const summary = event.target.closest('[data-banned-modal] > summary');
+    const summary = event.target.closest('[data-record-modal] > summary');
     if (summary?.parentElement.open) event.preventDefault();
 });
 
 document.addEventListener('toggle', (event) => {
-    if (! event.target.matches('[data-banned-modal]') || ! window.matchMedia('(max-width: 639px)').matches) return;
+    if (! event.target.matches('[data-record-modal]')) return;
 
     document.body.classList.toggle('overflow-hidden', event.target.open);
 }, true);
 
-if (window.matchMedia('(max-width: 639px)').matches && document.querySelector('[data-banned-modal][open]')) {
+if (document.querySelector('[data-record-modal][open]')) {
     document.body.classList.add('overflow-hidden');
 }
 
