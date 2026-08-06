@@ -311,6 +311,13 @@ class ExampleTest extends TestCase
         $this->assertNotSame('licenses/original.png', $record->license);
         Storage::disk('public')->assertExists($record->license);
         Storage::disk('public')->assertMissing('licenses/original.png');
+        $this->assertDatabaseHas('banned_audit_trails', [
+            'banned_id' => $record->id,
+            'user_id' => $owner->id,
+            'action' => 'license_updated',
+            'field' => 'license',
+            'old_value' => 'licenses/original.png',
+        ]);
     }
 
     public function test_the_record_owner_can_remove_an_existing_license_image(): void
@@ -337,6 +344,14 @@ class ExampleTest extends TestCase
         $record->refresh();
         $this->assertNull($record->license);
         Storage::disk('public')->assertMissing('licenses/remove-me.png');
+        $this->assertDatabaseHas('banned_audit_trails', [
+            'banned_id' => $record->id,
+            'user_id' => $owner->id,
+            'action' => 'license_removed',
+            'field' => 'license',
+            'old_value' => 'licenses/remove-me.png',
+            'new_value' => null,
+        ]);
     }
 
     public function test_an_admin_can_update_another_users_entry_and_replace_its_license(): void
@@ -367,6 +382,13 @@ class ExampleTest extends TestCase
         $this->assertNotSame('licenses/old.png', $record->license);
         Storage::disk('public')->assertExists($record->license);
         Storage::disk('public')->assertMissing('licenses/old.png');
+        $this->assertDatabaseHas('banned_audit_trails', [
+            'banned_id' => $record->id,
+            'user_id' => $admin->id,
+            'action' => 'license_updated',
+            'field' => 'license',
+            'old_value' => 'licenses/old.png',
+        ]);
     }
 
     public function test_any_authenticated_user_can_remove_a_license_image(): void

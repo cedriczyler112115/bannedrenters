@@ -241,6 +241,33 @@
                                         </div>
                                     </div>
                                     <p class="whitespace-pre-line text-sm leading-6 text-slate-600">{{ $record->description }}</p>
+
+                                    <div class="mt-5 border-t border-slate-200 pt-4">
+                                        <p class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400">Audit trail</p>
+                                        <div class="mt-3 space-y-3">
+                                            @forelse ($record->auditTrails as $trail)
+                                                <div class="rounded-xl border border-slate-200 bg-white px-4 py-3">
+                                                    <div class="flex flex-wrap items-center justify-between gap-2">
+                                                        <p class="text-xs font-semibold text-[#102922]">
+                                                            {{ $trail->action === 'license_removed' ? 'License removed' : 'License updated' }}
+                                                        </p>
+                                                        <p class="text-[11px] text-slate-400">{{ $trail->created_at->format('M d, Y h:i A') }}</p>
+                                                    </div>
+                                                    <p class="mt-1 text-[11px] text-slate-500">
+                                                        By <span class="font-semibold text-slate-700">{{ $trail->user?->name ?? 'Unknown user' }}</span>
+                                                    </p>
+                                                    <p class="mt-1 text-[11px] text-slate-500">
+                                                        Old: <span class="font-mono text-slate-700">{{ $trail->old_value ?: 'None' }}</span>
+                                                    </p>
+                                                    <p class="mt-0.5 text-[11px] text-slate-500">
+                                                        New: <span class="font-mono text-slate-700">{{ $trail->new_value ?: 'None' }}</span>
+                                                    </p>
+                                                </div>
+                                            @empty
+                                                <p class="text-xs text-slate-400">No license changes yet.</p>
+                                            @endforelse
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </article>

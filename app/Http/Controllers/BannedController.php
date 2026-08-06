@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Banned;
+use App\Models\BannedAuditTrail;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,10 @@ class BannedController extends Controller
         ]);
 
         $records = Banned::query()
-            ->with('creator:id,name,email,contact_number,avatar')
+            ->with([
+                'creator:id,name,email,contact_number,avatar',
+                'auditTrails.user:id,name,email',
+            ])
             ->when(
                 $filters['fullname'] ?? null,
                 fn ($query, string $fullname) => $query->where('fullname', 'like', '%'.addcslashes($fullname, '%_\\').'%'),
@@ -105,9 +109,27 @@ class BannedController extends Controller
                 $banned->update([
                     'license' => $newLicensePath,
                 ]);
+                BannedAuditTrail::query()->create([
+                    'banned_id' => $banned->id,
+                    'user_id' => $request->user()->id,
+                    'action' => 'license_updated',
+                    'field' => 'license',
+                    'old_value' => $oldLicensePath,
+                    'new_value' => $newLicensePath,
+                    'created_at' => now(),
+                ]);
             } elseif ($removeLicense && $oldLicensePath) {
                 $banned->update([
                     'license' => null,
+                ]);
+                BannedAuditTrail::query()->create([
+                    'banned_id' => $banned->id,
+                    'user_id' => $request->user()->id,
+                    'action' => 'license_removed',
+                    'field' => 'license',
+                    'old_value' => $oldLicensePath,
+                    'new_value' => null,
+                    'created_at' => now(),
                 ]);
             }
         } catch (Throwable $exception) {
