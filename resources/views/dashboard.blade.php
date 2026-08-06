@@ -194,53 +194,35 @@
                                     <div class="mb-2 flex items-center justify-between gap-3">
                                         <p class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400">Why it is Banned?</p>
                                         <div class="flex items-center gap-1">
-                                            @can('update', $record)
-                                                <details data-record-modal class="relative" @if($errors->any() && old('_form') === "update-{$record->id}") open @endif>
-                                                    <summary class="inline-flex cursor-pointer list-none items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-semibold text-[#26765f] transition hover:bg-emerald-100 hover:text-[#153d32] focus:outline-none focus:ring-4 focus:ring-emerald-100">
-                                                        <svg viewBox="0 0 24 24" class="size-3.5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
-                                                        Edit
-                                                    </summary>
-                                                    <div data-modal-backdrop class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/50 p-4 text-left backdrop-blur-[2px]">
-                                                        <div role="dialog" aria-modal="true" aria-labelledby="edit-record-title-{{ $record->id }}" class="max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl">
-                                                            <div class="mb-5 flex items-start justify-between gap-4">
-                                                                <div>
-                                                                    <h2 id="edit-record-title-{{ $record->id }}" class="text-base font-semibold normal-case tracking-normal text-[#102922]">Edit banned renter record</h2>
-                                                                    <p class="mt-1 text-xs font-normal normal-case tracking-normal text-slate-500">Leave the license image empty to keep the current photo.</p>
-                                                                </div>
-                                                                <button type="button" data-modal-close class="grid size-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-800" aria-label="Close edit renter form">
-                                                                    <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                                                                </button>
+                                            <details data-record-modal class="relative" @if($errors->any() && old('_form') === "update-{$record->id}") open @endif>
+                                                <summary class="inline-flex cursor-pointer list-none items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-semibold text-[#26765f] transition hover:bg-emerald-100 hover:text-[#153d32] focus:outline-none focus:ring-4 focus:ring-emerald-100">
+                                                    <svg viewBox="0 0 24 24" class="size-3.5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
+                                                    Edit
+                                                </summary>
+                                                <div data-modal-backdrop class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/50 p-4 text-left backdrop-blur-[2px]">
+                                                    <div role="dialog" aria-modal="true" aria-labelledby="edit-record-title-{{ $record->id }}" class="max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl">
+                                                        <div class="mb-5 flex items-start justify-between gap-4">
+                                                            <div>
+                                                                <h2 id="edit-record-title-{{ $record->id }}" class="text-base font-semibold normal-case tracking-normal text-[#102922]">Replace license image</h2>
+                                                                <p class="mt-1 text-xs font-normal normal-case tracking-normal text-slate-500">Only the license image can be updated here.</p>
                                                             </div>
-                                                            <form method="POST" action="{{ route('banned.update', $record) }}" enctype="multipart/form-data" class="space-y-4">
-                                                                @csrf
-                                                                @method('PATCH')
-                                                                <input type="hidden" name="_form" value="update-{{ $record->id }}">
-                                                                <div>
-                                                                    <label for="edit-fullname-{{ $record->id }}" class="mb-1.5 block text-xs font-semibold text-slate-700">Full name</label>
-                                                                    <input id="edit-fullname-{{ $record->id }}" name="fullname" value="{{ old('_form') === "update-{$record->id}" ? old('fullname') : $record->fullname }}" maxlength="150" required class="auth-input">
-                                                                    @if(old('_form') === "update-{$record->id}") @error('fullname')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror @endif
-                                                                </div>
-                                                                <div>
-                                                                    <label for="edit-address-{{ $record->id }}" class="mb-1.5 block text-xs font-semibold text-slate-700">Address</label>
-                                                                    <input id="edit-address-{{ $record->id }}" name="address" value="{{ old('_form') === "update-{$record->id}" ? old('address') : $record->address }}" maxlength="255" required class="auth-input">
-                                                                    @if(old('_form') === "update-{$record->id}") @error('address')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror @endif
-                                                                </div>
-                                                                <div>
-                                                                    <label for="edit-license-{{ $record->id }}" class="mb-1.5 block text-xs font-semibold text-slate-700">Replace license image <span class="font-normal text-slate-400">(optional)</span></label>
-                                                                    <input id="edit-license-{{ $record->id }}" name="license" type="file" accept="image/jpeg,image/png,image/webp" class="block w-full rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-500 file:mr-3 file:border-0 file:bg-[#e9f6ef] file:px-4 file:py-3 file:font-semibold file:text-[#176047] hover:file:bg-[#dcefe5]">
-                                                                    @if(old('_form') === "update-{$record->id}") @error('license')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror @endif
-                                                                </div>
-                                                                <div>
-                                                                    <label for="edit-description-{{ $record->id }}" class="mb-1.5 block text-xs font-semibold text-slate-700">Why it is Banned?</label>
-                                                                    <textarea id="edit-description-{{ $record->id }}" name="description" rows="7" maxlength="5000" required class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-[#38836d] focus:ring-4 focus:ring-emerald-100">{{ old('_form') === "update-{$record->id}" ? old('description') : $record->description }}</textarea>
-                                                                    @if(old('_form') === "update-{$record->id}") @error('description')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror @endif
-                                                                </div>
-                                                                <button type="submit" class="auth-submit">Save changes <span aria-hidden="true">&rarr;</span></button>
-                                                            </form>
+                                                            <button type="button" data-modal-close class="grid size-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-800" aria-label="Close edit renter form">
+                                                                <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                                                            </button>
                                                         </div>
+                                                        <form method="POST" action="{{ route('banned.update', $record) }}" enctype="multipart/form-data" class="space-y-4">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <div>
+                                                                <label for="edit-license-{{ $record->id }}" class="mb-1.5 block text-xs font-semibold text-slate-700">License image <span class="font-normal text-slate-400">(optional)</span></label>
+                                                                <input id="edit-license-{{ $record->id }}" name="license" type="file" accept="image/jpeg,image/png,image/webp" class="block w-full rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-500 file:mr-3 file:border-0 file:bg-[#e9f6ef] file:px-4 file:py-3 file:font-semibold file:text-[#176047] hover:file:bg-[#dcefe5]">
+                                                                @error('license')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                                                            </div>
+                                                            <button type="submit" class="auth-submit">Save changes <span aria-hidden="true">&rarr;</span></button>
+                                                        </form>
                                                     </div>
-                                                </details>
-                                            @endcan
+                                                </div>
+                                            </details>
 
                                             @can('delete', $record)
                                                 <form method="POST" action="{{ route('banned.destroy', $record) }}" data-delete-record data-record-name="{{ $record->fullname }}">
