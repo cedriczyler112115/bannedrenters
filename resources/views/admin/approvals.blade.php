@@ -85,7 +85,7 @@
                 </div>
 
                 @forelse ($approvedUsers as $user)
-                    <div class="flex flex-col gap-4 border-b border-slate-100 p-5 last:border-b-0 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="flex flex-col gap-4 border-b border-slate-100 p-5 last:border-b-0 lg:flex-row lg:items-center lg:justify-between">
                         <div class="flex min-w-0 items-center gap-3">
                             @if ($user->avatar)
                                 <img src="{{ $user->avatar }}" alt="" class="size-11 rounded-full object-cover ring-2 ring-emerald-100">
@@ -94,10 +94,19 @@
                             @endif
                             <div class="min-w-0">
                                 <p class="truncate font-semibold text-slate-800">{{ $user->name }}</p>
-                                <p class="truncate text-sm text-slate-500">{{ $user->email }}</p>
-                                <p class="truncate text-sm text-slate-500">{{ $user->contact_number ?: 'Contact number not set' }}</p>
-                                <p class="mt-1 text-xs text-slate-400">Approved {{ $user->approved_at?->diffForHumans() }}</p>
+                                <p class="mt-0.5 truncate text-sm text-slate-500">{{ $user->email }}</p>
                             </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-500 lg:justify-end">
+                            <p class="min-w-0 truncate">
+                                <span class="font-semibold text-slate-700">Contact:</span>
+                                {{ $user->contact_number ?: 'Not set' }}
+                            </p>
+                            <p class="min-w-0 truncate">
+                                <span class="font-semibold text-slate-700">Approved:</span>
+                                {{ $user->approved_at?->diffForHumans() }}
+                            </p>
                         </div>
                     </div>
                 @empty
@@ -109,6 +118,10 @@
                         <p class="mt-1 text-sm text-slate-400">Approved users will appear here after review.</p>
                     </div>
                 @endforelse
+
+                @if ($approvedUsers->hasPages())
+                    <div class="border-t border-slate-100 px-6 py-4">{{ $approvedUsers->links() }}</div>
+                @endif
             </section>
         </div>
     </main>

@@ -32,8 +32,7 @@ class ApprovalController extends Controller
         $approvedUsers = User::query()
             ->whereNotNull('approved_at')
             ->latest('approved_at')
-            ->limit(15)
-            ->get();
+            ->paginate(15, ['*'], 'approved_page');
 
         return view('admin.approvals', compact('pendingUsers', 'approvedUsers'));
     }
