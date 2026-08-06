@@ -24,12 +24,18 @@ class ApprovalController extends Controller
 
     public function index(): View
     {
-        $users = User::query()
+        $pendingUsers = User::query()
             ->whereNull('approved_at')
             ->oldest()
             ->paginate(15);
 
-        return view('admin.approvals', compact('users'));
+        $approvedUsers = User::query()
+            ->whereNotNull('approved_at')
+            ->latest('approved_at')
+            ->limit(15)
+            ->get();
+
+        return view('admin.approvals', compact('pendingUsers', 'approvedUsers'));
     }
 
     public function approve(Request $request, User $user): RedirectResponse

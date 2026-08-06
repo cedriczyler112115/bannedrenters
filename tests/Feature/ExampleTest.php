@@ -147,11 +147,13 @@ class ExampleTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
         $pendingUser = User::factory()->pendingApproval()->create();
+        $approvedUser = User::factory()->create(['approved_at' => now()]);
 
         $this->actingAs($admin)
             ->get('/admin/approvals')
             ->assertOk()
-            ->assertSee($pendingUser->name);
+            ->assertSee($pendingUser->name)
+            ->assertSee($approvedUser->name);
 
         $this->patch("/admin/approvals/{$pendingUser->id}")
             ->assertRedirect()
