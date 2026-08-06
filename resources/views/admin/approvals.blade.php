@@ -85,8 +85,8 @@
                 </div>
 
                 @forelse ($approvedUsers as $user)
-                    <div class="flex flex-col gap-3 border-b border-slate-100 p-5 last:border-b-0 lg:flex-row lg:items-center lg:gap-6">
-                        <div class="flex min-w-0 items-center gap-3 lg:w-[32%]">
+                    <div class="grid gap-4 border-b border-slate-100 p-5 last:border-b-0 sm:grid-cols-2 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:gap-6">
+                        <div class="flex min-w-0 items-center gap-3">
                             @if ($user->avatar)
                                 <img src="{{ $user->avatar }}" alt="" class="size-11 rounded-full object-cover ring-2 ring-emerald-100">
                             @else
@@ -94,19 +94,29 @@
                             @endif
                             <div class="min-w-0">
                                 <p class="truncate font-semibold text-slate-800">{{ $user->name }}</p>
+                                <p class="truncate text-sm text-slate-500 lg:hidden">{{ $user->email }}</p>
                             </div>
                         </div>
 
-                        <div class="min-w-0 lg:w-[28%]">
-                            <p class="truncate text-sm text-slate-600">{{ $user->email }}</p>
+                        <div class="min-w-0 hidden lg:block">
+                            <p class="text-[11px] font-bold uppercase tracking-[.1em] text-slate-400">Email</p>
+                            <p class="mt-1 truncate text-sm text-slate-600">{{ $user->email }}</p>
                         </div>
 
-                        <div class="min-w-0 lg:w-[20%]">
-                            <p class="truncate text-sm text-slate-600">{{ $user->contact_number ?: 'Not set' }}</p>
+                        <div class="min-w-0">
+                            <p class="truncate text-sm text-slate-600 lg:hidden">{{ $user->contact_number ?: 'Not set' }}</p>
+                            <div class="hidden lg:block">
+                                <p class="text-[11px] font-bold uppercase tracking-[.1em] text-slate-400">Contact</p>
+                                <p class="mt-1 truncate text-sm text-slate-600">{{ $user->contact_number ?: 'Not set' }}</p>
+                            </div>
                         </div>
 
-                        <div class="min-w-0 lg:w-[20%]">
-                            <p class="truncate text-sm text-slate-600">{{ $user->approved_at?->diffForHumans() }}</p>
+                        <div class="min-w-0">
+                            <p class="truncate text-sm text-slate-600 lg:hidden">{{ $user->approved_at?->diffForHumans() }}</p>
+                            <div class="hidden lg:block">
+                                <p class="text-[11px] font-bold uppercase tracking-[.1em] text-slate-400">Approved</p>
+                                <p class="mt-1 truncate text-sm text-slate-600">{{ $user->approved_at?->diffForHumans() }}</p>
+                            </div>
                         </div>
                     </div>
                 @empty
