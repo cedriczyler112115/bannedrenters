@@ -112,7 +112,7 @@ class BannedController extends Controller
                 BannedAuditTrail::query()->create([
                     'banned_id' => $banned->id,
                     'user_id' => $request->user()->id,
-                    'action' => $oldLicensePath ? 'Replace' : 'Added',
+                    'action' => $oldLicensePath ? 'Updated' : 'Added',
                     'field' => 'license',
                     'old_value' => $oldLicensePath,
                     'new_value' => $newLicensePath,

@@ -314,7 +314,7 @@ class ExampleTest extends TestCase
         $this->assertDatabaseHas('banned_audit_trails', [
             'banned_id' => $record->id,
             'user_id' => $owner->id,
-            'action' => 'Replace',
+            'action' => 'Updated',
             'field' => 'license',
             'old_value' => 'licenses/original.png',
         ]);
@@ -416,7 +416,7 @@ class ExampleTest extends TestCase
         $this->assertDatabaseHas('banned_audit_trails', [
             'banned_id' => $record->id,
             'user_id' => $admin->id,
-            'action' => 'Replace',
+            'action' => 'Updated',
             'field' => 'license',
             'old_value' => 'licenses/old.png',
         ]);
