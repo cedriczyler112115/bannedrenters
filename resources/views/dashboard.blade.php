@@ -246,12 +246,19 @@
                                         <p class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400">Audit trail</p>
                                         <div class="mt-3 space-y-3">
                                             @forelse ($record->auditTrails as $trail)
+                                                @php
+                                                    $trailLabel = match ($trail->action) {
+                                                        'license_updated', 'Replace', 'Updated' => 'Updated',
+                                                        'license_removed', 'Removed' => 'Removed',
+                                                        default => $trail->action,
+                                                    };
+                                                @endphp
                                                 <div class="rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs text-slate-600">
                                                     <span class="font-semibold text-[#102922]">{{ $trail->user?->name ?? 'Unknown user' }}</span>
                                                     <span class="mx-1 text-slate-300">•</span>
                                                     <span>{{ $trail->created_at->format('M d, Y h:i A') }}</span>
                                                     <span class="mx-1 text-slate-300">•</span>
-                                                    <span class="font-semibold text-[#26765f]">{{ $trail->action }}</span>
+                                                    <span class="font-semibold text-[#26765f]">{{ $trailLabel }}</span>
                                                 </div>
                                             @empty
                                                 <p class="text-xs text-slate-400">No license changes yet.</p>
