@@ -24,7 +24,6 @@ class BannedController extends Controller
             ->when(
                 $filters['fullname'] ?? null,
                 fn ($query, string $fullname) => $query->where('fullname', 'like', '%'.addcslashes($fullname, '%_\\').'%'),
-                fn ($query) => $query->whereRaw('1 = 0'),
             )
             ->latest('date_created')
             ->paginate(10)
