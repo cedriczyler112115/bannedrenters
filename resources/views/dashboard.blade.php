@@ -218,6 +218,10 @@
                                                                 <input id="edit-license-{{ $record->id }}" name="license" type="file" accept="image/jpeg,image/png,image/webp" class="block w-full rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-500 file:mr-3 file:border-0 file:bg-[#e9f6ef] file:px-4 file:py-3 file:font-semibold file:text-[#176047] hover:file:bg-[#dcefe5]">
                                                                 @error('license')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                                             </div>
+                                                            <label class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                                                                <input type="checkbox" name="remove_license" value="1" class="size-4 rounded border-slate-300 text-[#153d32] focus:ring-emerald-100" @checked(!filled($record->license))>
+                                                                <span>Remove existing license image</span>
+                                                            </label>
                                                             <button type="submit" class="auth-submit">Save changes <span aria-hidden="true">&rarr;</span></button>
                                                         </form>
                                                     </div>

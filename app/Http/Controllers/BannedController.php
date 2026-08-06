@@ -90,10 +90,12 @@ class BannedController extends Controller
         Gate::authorize('update', $banned);
 
         $validated = $request->validate([
+            'remove_license' => ['nullable', 'boolean'],
             'license' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
 
         $oldLicensePath = $banned->license;
+        $removeLicense = $request->boolean('remove_license');
         $newLicensePath = $request->hasFile('license')
             ? $request->file('license')->store('licenses', 'public')
             : null;
@@ -102,6 +104,10 @@ class BannedController extends Controller
             if ($newLicensePath) {
                 $banned->update([
                     'license' => $newLicensePath,
+                ]);
+            } elseif ($removeLicense && $oldLicensePath) {
+                $banned->update([
+                    'license' => null,
                 ]);
             }
         } catch (Throwable $exception) {
@@ -112,7 +118,7 @@ class BannedController extends Controller
             throw $exception;
         }
 
-        if ($newLicensePath && $oldLicensePath) {
+        if (($newLicensePath || $removeLicense) && $oldLicensePath) {
             Storage::disk('public')->delete($oldLicensePath);
         }
 

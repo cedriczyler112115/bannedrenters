@@ -285,6 +285,8 @@ class ExampleTest extends TestCase
 
     public function test_the_record_owner_can_update_a_banned_entry(): void
     {
+        Storage::fake('public');
+        Storage::disk('public')->put('licenses/original.png', 'original-license');
         $owner = User::factory()->create();
         $record = Banned::query()->create([
             'fullname' => 'Original Name',
@@ -297,20 +299,44 @@ class ExampleTest extends TestCase
 
         $this->actingAs($owner)
             ->patch("/banned/{$record->id}", [
-                'fullname' => 'Updated Name',
-                'address' => 'Updated Address',
-                'description' => 'Updated description',
+                'license' => UploadedFile::fake()->image('updated.png'),
             ])
             ->assertRedirect()
             ->assertSessionHas('status', 'Banned renter record updated successfully.');
 
-        $this->assertDatabaseHas('banned', [
-            'id' => $record->id,
-            'fullname' => 'Updated Name',
-            'address' => 'Updated Address',
-            'license' => 'licenses/original.png',
-            'description' => 'Updated description',
+        $record->refresh();
+        $this->assertSame('Original Name', $record->fullname);
+        $this->assertSame('Original Address', $record->address);
+        $this->assertSame('Original description', $record->description);
+        $this->assertNotSame('licenses/original.png', $record->license);
+        Storage::disk('public')->assertExists($record->license);
+        Storage::disk('public')->assertMissing('licenses/original.png');
+    }
+
+    public function test_the_record_owner_can_remove_an_existing_license_image(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('licenses/remove-me.png', 'license-image');
+        $owner = User::factory()->create();
+        $record = Banned::query()->create([
+            'fullname' => 'Remove License Record',
+            'address' => 'Original Address',
+            'license' => 'licenses/remove-me.png',
+            'description' => 'Original description',
+            'created_by' => $owner->id,
+            'date_created' => now(),
         ]);
+
+        $this->actingAs($owner)
+            ->patch("/banned/{$record->id}", [
+                'remove_license' => '1',
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('status', 'Banned renter record updated successfully.');
+
+        $record->refresh();
+        $this->assertNull($record->license);
+        Storage::disk('public')->assertMissing('licenses/remove-me.png');
     }
 
     public function test_an_admin_can_update_another_users_entry_and_replace_its_license(): void
@@ -330,28 +356,29 @@ class ExampleTest extends TestCase
 
         $this->actingAs($admin)
             ->patch("/banned/{$record->id}", [
-                'fullname' => 'Admin Updated',
-                'address' => 'General Santos City',
                 'license' => UploadedFile::fake()->image('replacement.png'),
-                'description' => 'Updated by administrator',
             ])
             ->assertRedirect();
 
         $record->refresh();
-        $this->assertSame('Admin Updated', $record->fullname);
+        $this->assertSame('Admin Editable', $record->fullname);
+        $this->assertSame('Davao City', $record->address);
+        $this->assertSame('Original description', $record->description);
         $this->assertNotSame('licenses/old.png', $record->license);
         Storage::disk('public')->assertExists($record->license);
         Storage::disk('public')->assertMissing('licenses/old.png');
     }
 
-    public function test_a_non_owner_cannot_update_a_banned_entry(): void
+    public function test_any_authenticated_user_can_remove_a_license_image(): void
     {
         $owner = User::factory()->create();
         $otherUser = User::factory()->create();
+        Storage::fake('public');
+        Storage::disk('public')->put('licenses/shared.png', 'shared-license');
         $record = Banned::query()->create([
             'fullname' => 'Protected Update Record',
             'address' => 'Davao City',
-            'license' => null,
+            'license' => 'licenses/shared.png',
             'description' => 'Original description',
             'created_by' => $owner->id,
             'date_created' => now(),
@@ -359,16 +386,14 @@ class ExampleTest extends TestCase
 
         $this->actingAs($otherUser)
             ->patch("/banned/{$record->id}", [
-                'fullname' => 'Unauthorized Change',
-                'address' => 'Changed Address',
-                'description' => 'Changed description',
+                'remove_license' => '1',
             ])
-            ->assertForbidden();
+            ->assertRedirect()
+            ->assertSessionHas('status', 'Banned renter record updated successfully.');
 
-        $this->assertDatabaseHas('banned', [
-            'id' => $record->id,
-            'fullname' => 'Protected Update Record',
-        ]);
+        $record->refresh();
+        $this->assertNull($record->license);
+        Storage::disk('public')->assertMissing('licenses/shared.png');
     }
 
     public function test_the_registry_can_be_filtered_and_is_paginated(): void
