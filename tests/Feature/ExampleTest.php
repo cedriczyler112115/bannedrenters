@@ -314,9 +314,40 @@ class ExampleTest extends TestCase
         $this->assertDatabaseHas('banned_audit_trails', [
             'banned_id' => $record->id,
             'user_id' => $owner->id,
-            'action' => 'license_updated',
+            'action' => 'Replace',
             'field' => 'license',
             'old_value' => 'licenses/original.png',
+        ]);
+    }
+
+    public function test_the_record_owner_can_add_a_license_image_to_an_empty_record(): void
+    {
+        Storage::fake('public');
+        $owner = User::factory()->create();
+        $record = Banned::query()->create([
+            'fullname' => 'Empty License Record',
+            'address' => 'Original Address',
+            'license' => null,
+            'description' => 'Original description',
+            'created_by' => $owner->id,
+            'date_created' => now(),
+        ]);
+
+        $this->actingAs($owner)
+            ->patch("/banned/{$record->id}", [
+                'license' => UploadedFile::fake()->image('added.png'),
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('status', 'Banned renter record updated successfully.');
+
+        $record->refresh();
+        $this->assertNotNull($record->license);
+        $this->assertDatabaseHas('banned_audit_trails', [
+            'banned_id' => $record->id,
+            'user_id' => $owner->id,
+            'action' => 'Added',
+            'field' => 'license',
+            'old_value' => null,
         ]);
     }
 
@@ -347,7 +378,7 @@ class ExampleTest extends TestCase
         $this->assertDatabaseHas('banned_audit_trails', [
             'banned_id' => $record->id,
             'user_id' => $owner->id,
-            'action' => 'license_removed',
+            'action' => 'Removed',
             'field' => 'license',
             'old_value' => 'licenses/remove-me.png',
             'new_value' => null,
@@ -385,7 +416,7 @@ class ExampleTest extends TestCase
         $this->assertDatabaseHas('banned_audit_trails', [
             'banned_id' => $record->id,
             'user_id' => $admin->id,
-            'action' => 'license_updated',
+            'action' => 'Replace',
             'field' => 'license',
             'old_value' => 'licenses/old.png',
         ]);
