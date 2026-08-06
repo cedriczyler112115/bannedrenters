@@ -29,6 +29,7 @@ class BannedController extends Controller
                 $filters['fullname'] ?? null,
                 fn ($query, string $fullname) => $query->where('fullname', 'like', '%'.addcslashes($fullname, '%_\\').'%'),
             )
+            ->orderByRaw("CASE WHEN license IS NOT NULL AND license <> '' THEN 1 ELSE 0 END DESC")
             ->latest('date_created')
             ->paginate(10)
             ->withQueryString();
