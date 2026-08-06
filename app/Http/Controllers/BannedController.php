@@ -61,7 +61,7 @@ class BannedController extends Controller
                 'license' => $licensePath,
                 'description' => trim($validated['description']),
                 'created_by' => $request->user()->id,
-                'date_created' => now(),
+                'date_created' => now('Asia/Manila')->toDateTimeString(),
             ]);
         } catch (Throwable $exception) {
             if ($licensePath) {
@@ -116,7 +116,7 @@ class BannedController extends Controller
                     'field' => 'license',
                     'old_value' => $oldLicensePath,
                     'new_value' => $newLicensePath,
-                    'created_at' => now(),
+                    'created_at' => now('Asia/Manila')->toDateTimeString(),
                 ]);
             } elseif ($removeLicense && $oldLicensePath) {
                 $banned->update([
@@ -129,7 +129,7 @@ class BannedController extends Controller
                     'field' => 'license',
                     'old_value' => $oldLicensePath,
                     'new_value' => null,
-                    'created_at' => now(),
+                    'created_at' => now('Asia/Manila')->toDateTimeString(),
                 ]);
             }
         } catch (Throwable $exception) {
